@@ -1,0 +1,1 @@
+`gcc non-recursive.c -o  a.out | ./a.out`
