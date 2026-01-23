@@ -1,1 +1,3 @@
 *.out
+recursive
+non-recursive
