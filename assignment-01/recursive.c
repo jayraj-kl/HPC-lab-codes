@@ -28,24 +28,24 @@ void merge(int arr[], int left, int mid, int right, int temp[]) {
     }
 }
 
-void iterativeMergeSort(int arr[], int n) {
-    int currSize; 
-    int leftStart; // For picking starting point of left subarrays
+void recursiveMergeSort(int arr[], int left, int right, int temp[]) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
 
-    int temp[n];
-
-    for (currSize = 1; currSize <= n - 1; currSize = 2 * currSize) {
-        for (leftStart = 0; leftStart < n - 1; leftStart += 2 * currSize) {
-            int mid = leftStart + currSize - 1;
-            int rightEnd = (leftStart + 2 * currSize - 1 < n - 1) ? leftStart + 2 * currSize - 1 : n - 1;
-
-            if (mid < n - 1) {
-                merge(arr, leftStart, mid, rightEnd, temp);
+        #pragma omp parallel sections
+        {
+            #pragma omp section
+            {
+                recursiveMergeSort(arr, left, mid, temp);
             }
+            #pragma omp section
+            {
+                recursiveMergeSort(arr, mid + 1, right, temp);
+            }            
         }
+        merge(arr, left, mid, right, temp);
     }
 }
-
 
 int main() {
     int n;
@@ -67,14 +67,22 @@ int main() {
         arr[i] = rand() % 100000;  
     }
 
+    int *temp = (int *)malloc(n * sizeof(int));
+    if (!temp) {
+        printf("Memory allocation for temp array failed\n");
+        free(arr);
+        return 1;
+    }
+
     // ---- TIMER START ----
     double start = omp_get_wtime();
-    iterativeMergeSort(arr, n);
+    recursiveMergeSort(arr, 0, n - 1, temp);
     double end = omp_get_wtime();
     // ---- TIMER END ----
-
+    
     printf("Time taken for sorting: %f seconds\n", end - start);
-    free(arr);
 
+    free(arr);
+    free(temp);
     return 0;
 }
