@@ -29,13 +29,14 @@ void merge(int arr[], int left, int mid, int right, int temp[]) {
 }
 
 void iterativeMergeSort(int arr[], int n) {
-    int currSize; 
-    int leftStart; // For picking starting point of left subarrays
+    int *temp = (int *)malloc(n * sizeof(int));
+    if (!temp) {
+        printf("Memory allocation for temp array failed\n");
+        return;
+    }
 
-    int temp[n];
-
-    for (currSize = 1; currSize <= n - 1; currSize = 2 * currSize) {
-        for (leftStart = 0; leftStart < n - 1; leftStart += 2 * currSize) {
+    for (int currSize = 1; currSize <= n - 1; currSize = 2 * currSize) {
+        for (int leftStart = 0; leftStart < n - 1; leftStart += 2 * currSize) {
             int mid = leftStart + currSize - 1;
             int rightEnd = (leftStart + 2 * currSize - 1 < n - 1) ? leftStart + 2 * currSize - 1 : n - 1;
 
@@ -44,6 +45,7 @@ void iterativeMergeSort(int arr[], int n) {
             }
         }
     }
+    free(temp);
 }
 
 

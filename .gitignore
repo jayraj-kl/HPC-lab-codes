@@ -1,3 +1,7 @@
 *.out
 recursive
 non-recursive
+
+basic-bubble
+optimized-bubble
+parallel-bubble

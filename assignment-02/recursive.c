@@ -28,22 +28,35 @@ void merge(int arr[], int left, int mid, int right, int temp[]) {
     }
 }
 
-void recursiveMergeSort(int arr[], int left, int right, int temp[]) {
+#define THRESHOLD 499  // Stop parallelizing below this size
+
+void recursiveMergeSortHelper(int arr[], int left, int right, int temp[], int depth) {
     if (left < right) {
         int mid = left + (right - left) / 2;
 
-        #pragma omp parallel sections
-        {
-            #pragma omp section
-            {
-                recursiveMergeSort(arr, left, mid, temp);
-            }
-            #pragma omp section
-            {
-                recursiveMergeSort(arr, mid + 1, right, temp);
-            }            
+        // Only parallelize if above threshold and not too deep
+        if ((right - left) > THRESHOLD && depth < 4) {
+            #pragma omp task shared(arr, temp)
+            recursiveMergeSortHelper(arr, left, mid, temp, depth + 1);
+            
+            #pragma omp task shared(arr, temp)
+            recursiveMergeSortHelper(arr, mid + 1, right, temp, depth + 1);
+            
+            #pragma omp taskwait
+        } else {
+            // Sequential execution for small subarrays
+            recursiveMergeSortHelper(arr, left, mid, temp, depth + 1);
+            recursiveMergeSortHelper(arr, mid + 1, right, temp, depth + 1);
         }
         merge(arr, left, mid, right, temp);
+    }
+}
+
+void recursiveMergeSort(int arr[], int left, int right, int temp[]) {
+    #pragma omp parallel
+    {
+        #pragma omp single
+        recursiveMergeSortHelper(arr, left, right, temp, 0);
     }
 }
 

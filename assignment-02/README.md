@@ -4,7 +4,7 @@
 
 | Sr No. | Data Points/Data Values | Time taken for Serial Program (Merge Sort Non-Recursive) | Time taken for Parallel Program (Merge Sort Recursive with Threads) |
 |--------|-------------------------|----------------------------------------------------------|-------------------------------------------------------------------|
-| 1      | 500                     | 0.000053 seconds                                        | 0.018033 seconds                                                 |
+| 1      | 500                     | 0.000053 seconds                                        | 0.000429 seconds                                                 |
 | 2      | 1,000                   | 0.000119 seconds                                        | 0.002716 seconds                                                 |
 | 3      | 10,000                  | 0.001459 seconds                                        | 0.021253 seconds                                                 |
 | 4      | 30,000                  | 0.005460 seconds                                        | 0.021543 seconds                                                 |
